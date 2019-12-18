@@ -5,8 +5,6 @@
 ###
 ###  CODE PROVIDED
 
-
-
 def read_string_list_from_file(the_file):
     '''
     GENERIC READING OF TEXT FILE
