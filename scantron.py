@@ -5,6 +5,8 @@
 ###
 ###  CODE PROVIDED
 
+
+
 def read_string_list_from_file(the_file):
     '''
     GENERIC READING OF TEXT FILE
@@ -18,7 +20,7 @@ def read_string_list_from_file(the_file):
     3) lines are separated by "\n", that is, after each "line" (student)
        in the file  there is a return ("\n") . Also there is (one single)
        return ("\n") after the last line  in the_file
-    4) Thhis function returns a list of strings
+    4) This function returns a list of strings
     '''
     
     fileRef = open(the_file,"r")      # opening file to be read
@@ -30,9 +32,9 @@ def read_string_list_from_file(the_file):
         localList.append(string)      # appends a new element
                                       # of type string to the list
         
-    fileRef.close()  
-        
-    #........
+    fileRef.close()
+
+        #........
     print ("\n JUST TO TRACE, the local list of strings is:\n")
     for element in localList:
         print (element)  # element is a string for one student
@@ -40,8 +42,7 @@ def read_string_list_from_file(the_file):
         
     return localList
 
-    
-    
+
 def write_result_to_file(lres,the_file):
     '''
     Creates a text output file from a list of strings
@@ -64,201 +65,314 @@ def write_result_to_file(lres,the_file):
                                     
     fileRef.close()
     return
-def title():
-    print("~Welcome to this CMPT 120 Scantron Processing system~")
-    print(" ====================================================")
-    return
-
-def points():
-    new_lst=[]
-    st_lst=[]
-    new_lst=key[1].split(" ")
-    for i in range(len(new_lst)):
-        st_lst=float(new_lst[i])
-        print(str(st_lst)+" ", end="")
-    return
-
-def maximum_point():
-    new_lst=[]
-    add=0
-    new_lst=key[1].split(" ")
-    for i in range(len(new_lst)):
-        add=add+float(new_lst[i])
-    return(add)
-
-real_lst = []
-test_lst=[]
 
 
-def compareAll(alist):
-    for i in range(len(alist)):
-        test_lst.append(alist[i].split())
-        ##print(ans_lst)
-        score_lst=key[1].split(" ")
-        ##print(point_lst)
-        st=" "
-        avg=0.0
-    for j in range(len(test_lst)):
-        total=0.0
-        for i in range(len(test_lst[j][1])):
-            if test_lst[j][1][i]==key[0][i]:
-                total= total + float(score_lst[i])
-            avg=total/maximum_point()*100
-            st= test_lst[j][0]+ "," + str(total) + "," + str(avg)
-        real_lst.append(st.split(","))
-        if user_input.lower()=="all":
-            print(st)
-            print()
-            
-    return(real_lst)        
+def total_pts():                            
+    total = 0
+    for i in range(len(key_list())):
+        total = total + key_list()[i]
+    return total
 
-def stats (biglist):
-    highest_grade=biglist[0][1]
-    for i in range(len(biglist)):
-        if biglist[i][1]>highest_grade:
-            highest_grade=biglist[i][1]
-    print("Maximum points: ",highest_grade)
-    print()
-    average_score=0.0
-    tot=0.0
-    for i in range(len(biglist)):
-        tot=tot+float(biglist[i][1])
-    average_score=tot/len(biglist)
-    print("Average points: ", average_score)
-    print()
-    total_students=len(biglist)
-    print("Number of students processed: ", total_students)
-    return(highest_grade, average_score, total_students)
+def high_score(list):                       
+    maximum = 0
+    for i in range(len(list)):
+        if (maximum < list[i]):
+            maximum = list[i]
+    return maximum
 
+def only_ans():                                 ##make a list of the students answers
+    locallist = []
+    for i in range(len(stud_ans)):
+        st = ""
+        for k in range(len(stud_ans[i])):
+            if (stud_ans[i][k].isdigit()):
+                st = st + stud_ans[i][k]
+        locallist.append(st)
+    return locallist
 
-def all_correct(somelst):
-    correct_lst=[]
-    for j in range(len(key[0])):
-        count=0
-        for i in range(len(somelst[j][1])):
-            if somelst[j][1][i]==key[0][i]:
-                count=count+1
-        correct_lst.append(count)
-    return(correct_lst)
+def stud_names():
+    locallist = []
+    for i in range(len(stud_ans)):
+        st = ""
+        for k in range(len(stud_ans[i])):
+            if (stud_ans[i][k].isalpha()):
+                st = st + stud_ans[i][k]
+        locallist.append(st)
+    return locallist
+
+def answer_key():
+    st = ""
+    for i in range(len(key[0])):
+        if(int(key[0][i]) == 1):
+            st += "A" + " "
+        if(int(key[0][i]) == 2):
+            st += "B" + " "
+        if(int(key[0][i]) == 3):
+            st += "C" + " "
+        if(int(key[0][i]) == 4):
+            st += "D" + " "
+        if(int(key[0][i]) == 5):
+            st += "E" + " "
+    return st
+
+def hard_questions(list):                   ##determines the number of questions
+    locallist = []
+    minimum = list[0]
+    for i in range(len(list)):
+        if (minimum > list[i]):
+            minimum = list[i]
+    for i in range(len(list)):
+        if (list[i] == minimum):
+            locallist.append(i+1)
+    return locallist
+
+def process_ans():                          ##calculates each students total points based of answer key
+    locallist = []
+    for i in range(len(stud_ans)):
+        total = 0
+        for k in range(len(list_of_only_ans[i])):
+            if (list_of_only_ans[i][k] == key[0][k]):
+                total = total + key_list()[k]
+        locallist.append(total)
+    return locallist
+
+def list_of_percents():                     ##calculates the percentage each student got based on total mark
+    locallist = []
+    for i in range(len(list_scores)):
+        percent = round((list_scores[i]/total_pts())*100,1)
+        locallist.append(percent)
+    return locallist
+
+def average(list):
+    total = 0
+    for i in range(len(list)):
+          total = total + list[i]
+    avg = total / len(list)
+    return avg
+
+def output(alist1,alist2):              ##saves selected names and info into csv file
+    locallist = []
+    for i in range(len(alist1)):
+        st = "'" + alist1[i] + "'" + "," + str(alist2[i]) + "," + str((alist2[i]/total_pts())*100) + "\n"
+        locallist.append(st)
+    return locallist
+
+def calc_distr_pts(alist):              ##calculates the range of distribution points
+    locallist = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    for i in range(len(distr_range)):
+        for k in range(len(alist)):
+            if (alist[k] <= distr_range[i] and alist[k] > (distr_range[i]-10)):
+                locallist[i] = locallist[i] + 1
+    return locallist
+
+def correct_ans(list):                  ##displays amount of times the each answer was answered correctly
+    locallist = []
+    for i in range(len(key[0])):
+        count = 0
+        for k in range(len(list)):
+            if (list[k][i] == key[0][i]):
+                count += 1
+        locallist.append(count)
+    return locallist
+
+def hard_questions(list):               ##calculates the most questions answered incorrectly
+    locallist = []
+    minimum = list[0]
+    for i in range(len(list)):
+        if (minimum > list[i]):
+            minimum = list[i]
+    for i in range(len(list)):
+        if (list[i] == minimum):
+            locallist.append(i+1)
+    return locallist
+
+def key_list():                       ##displays answer list
+    st = ""
+    lst = []
+    for i in range(len(key[1])):
+        if (key[1][i] != " "):
+            st += key[1][i]
+        if (key[1][i] == " "):
+            lst.append(float(st))
+            st = ""
+        if (i == len(key[1])-1):
+            lst.append(float(st))
+    return lst
         
 
-
-student_ans=read_string_list_from_file("IN_data_studs.txt")
+stud_ans = read_string_list_from_file("IN_data_studs.txt")
 key = read_string_list_from_file("IN_key+pts.txt")
-print()
-title()
-print()
-print("The data file in this folder has", len(student_ans),"Students.")
-print("There are", len(key[0]),"Questions.")
-print()
-print("The answer key is: ")
-answer_key= ""
-for i in range(len(key[0])):
-    if (int(key[0][i]) == 1):
-        answer_key = answer_key + "A" + " "
-    if (int(key[0][i]) == 2):
-        answer_key = answer_key + "B" + " "
-    if (int(key[0][i]) == 3):
-        answer_key = answer_key + "C" + " "
-    if (int(key[0][i]) == 4):
-        answer_key = answer_key + "D" + " "
-    if (int(key[0][i]) == 5):
-        answer_key = answer_key + "E" + " "
+list_of_only_ans = only_ans()
+list_stud_names = stud_names()
+list_scores = process_ans()
+percentages = list_of_percents()
+distr_range = [10, 20, 30, 40, 50, 60 ,70, 80, 90, 100]
 
-print(answer_key)
 print()
+print()
+print("~ Welcome to this CMPT 120 Scantron Processing system ~")
+print(" ===================================================== ")
+print()
+print("The data file in this folder has",len(stud_ans),"students.")
+print()
+print("There are",len(key[0]),"questions.")
+print()
+print("The answer key is:")
+print(answer_key())
 print()
 print("The points are:")
-points()
+for i in range(len(key_list())):
+    print(key_list()[i], end=" ")
 print()
+print("The maximum points possible are:",total_pts())
 
-print("The maximum points possible are:",maximum_point())
+print()
 print()
 print("You have to choose one of two options:")
-print("Type ALL (not case sensitive) to process the whole class.")
-print("Type SEL (not case sensitive)  to process selected students.")
-print("(up to half of the whole class) for selected students.")
-user_input=input("type in your option: ")
+print("Type ALL (not case sensitive) to process the whole class")
+print("Type SEL (not case sensitive) to process selected students",'\n',
+      "(up to half of the whole class)")
+print()
+user_input = input("Type ALL or SEL: ")
+print()
 
-
-while (user_input.isdigit()==True or (user_input.lower()!="all") and (user_input.lower()!="sel")):
-    print()
+while (user_input.isdigit()==True or (user_input.lower()!="all") and (user_input.lower() != "sel")):
     print("Please retype, ALL or SEL")
-    user_input=input("type in your option: ")
+    user_input = input("Type in your option: ")
     print()
+
+if (user_input.lower() == "all"):
     
-if user_input.lower()=="all":
-    print("All students have been processed!")
+    max_points = high_score(list_scores)
+    avg = average(list_scores)
+    correct = correct_ans(list_of_only_ans)
+    hardest_questions = hard_questions(correct)
+    distr_pts = calc_distr_pts(percentages)  
+    print("All students have been processed.")
+    print()
     print()
     print("Here is the output that will be saved in the folder!")
     print()
-    real_lst= compareAll(student_ans)
+    for i in range(len(stud_ans)):
+        st = "'" + list_stud_names[i] + "'" + ", " + str(list_scores[i]) + ", " + str(percentages[i])
+        print(st)
+        print()
+    output_file = output(list_stud_names,list_scores)
+    write_result_to_file(output_file,"output_testcase.csv")
+    print()
 
-    print("HERE ARE THE STATS!")
-    print("===================")
-    stats(real_lst)
-    print(all_correct(test_lst))
+    print("HERE ARE THE THE STATS!")
+    print("=======================")
+    print()
+    print("Maximum points:",max_points)
+    print()
+    print("Average points:",avg)
+    print()
+    print("Number of students processed:",len(stud_ans))
+    print()
+    print("Number of times each question was answered correctly:")
+    print(correct)
+    print()
+    print("Most difficult questions:",hardest_questions)
+    print()
+    print("Distribution points:",distr_pts)
+    print("(Considering ranges:",distr_range,")")
+    print()
 
-outList=[]
+if (user_input.lower() == "sel"):
 
-if (user_input.lower()=="sel"):
-    real_lst=compareAll(student_ans)
-    print("You choose to process provide the name of the student.")
-    foundName=False
-    half_student=len(real_lst)//2
-    num_student=0
+    sel_answer = []
+    sel_stud_names = []
+    sel_points = []
+    sel_percentage = []
+
+    print("You chose to process selected students")
+    print("You will be asked to provide the name of the student")
+    print()
     sel_input=input("Type a name or END to finish: ")
-    
-    while (sel_input.lower()!="end" and num_student<half_student):
-        sel_st=""
-    
-        for student in real_lst:
-            if sel_input==student[0]:
-                if student not in outList:
-                    outList.append(student)
-                    point=0
-                    foundName=True
-                    point=student[1]
-                
-        if foundName:
-            display="Student " + str(sel_input)+" " +"got " + str(point)+" " + "points."
-            print(display)
-            num_student=num_student+1
-            foundName=False
+ 
+    while sel_input.upper()!="END":
+        count = 0
+        if (sel_input.upper() == "END"):
+            break
         else:
-            print("This name is not in the data or have already been selected, type again")
-        sel_input=input("Type a name or END to finish: ")
-        
-        if num_student>=half_student:
-            print("All your selected students have been processed!")
-            print()
-            print("Here is the output that will be saved in the folder!")
-            for i in range(len(outList)):
-                sel_st = outList[i][0] +"," + outList[i][1] +"," + outList[i][2]
+            for i in range(len(list_stud_names)):
+                if (sel_input.upper() == list_stud_names[i]):
+                    count = count + 1
+                    print("Student " + list_stud_names[i] + " got " + str(list_scores[i]) + " points ")
+                    sel_answer.append(list_of_only_ans[i])
+                    sel_stud_names.append(list_stud_names[i])
+                    sel_points.append(list_scores[i])
+                    sel_percentage.append(percentages[i])
+            if (count == 0):
+                print("This name is not in the data, type again")
                 print()
-                print(sel_st)
+            sel_input = input("Type a name or END to finish: ") 
 
-            print()
-            print("HERE ARE THE STATS!")
-            print("===================")
-            stats(outList)
-        
+    max_points = high_score(sel_points)
+    avg = average(sel_points)
+    correct = correct_ans(sel_answer)
+    hardest_questions = hard_questions(correct)
+    distr_pts = calc_distr_pts(sel_percentage)
 
-    if sel_input.lower()=="end":
-        if outList==[]:
-            print("No students were selected from the data.")
-        else:
-            print("All your selected students have been processed!")
-            print()
-            print("Here is the output that will be saved in the folder!")
-            for i in range(len(outList)):
-                sel_st = outList[i][0] +"," + outList[i][1] +"," + outList[i][2]
-                print()
-                print(sel_st)
+    print("All your selected students have been processed.")
+    print()
+    print()
+    print("Here is the output that will be saved in the folder.")
+    print()
+    for i in range(len(sel_stud_names)):
+        st = "'" + sel_stud_names[i] + "'" + ", " + str(sel_points[i]) + ", " + str(sel_percentage[i])
+        print(st)
+        print()
+    output_file = output(sel_stud_names,sel_points)
+    write_result_to_file(output_file,"output_result.csv")
+    print()
+			
+    print("HERE ARE THE STATS")
+    print("==================")
+    print()
+    print("Maximum points:",max_points)
+    print()
+    print("Average points:",avg)
+    print()
+    print("Number of students processed:",len(sel_answer))
+    print()
+    print("Number of times each question was answered correctly:")
+    print(correct)
+    print()
+    print("Most difficult questions:",hardest_questions)
+    print()
+    print("Distribution points:",distr_pts)
+    print("(Considering ranges:",distr_range,")")
+    print()
 
-            print()
-            print("HERE ARE THE STATS!")
-            print("===================")
-            stats(outList)
-        #print(outList)
+input_graph = input("Would you like to graph the distribution? (Y/N): " )
+if (input_graph.upper() == "Y"):
+    import turtle as t
+    t.penup()
+    t.sety(-100)
+    t.pendown()
+    t.forward(350)
+    t.left(180)
+    t.forward(700)
+    t.right(180)
+    t.forward(60)
+    t.left(90)
+    t.colormode(255)
+    t.fillcolor(66, 149, 244)
+    for i in range(10):
+        t.begin_fill()
+        t.forward(int(distr_pts[i])*30)
+        t.right(90)
+        t.forward(22)
+        t.right(90)
+        t.forward(int(distr_pts[i])*30)
+        t.left(90)
+        t.end_fill()
+        t.forward(40)
+        t.left(90)
+
+print()
+
+print("All stats are done! Bye!")          
         
