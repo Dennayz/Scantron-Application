@@ -1,4 +1,4 @@
-# CMPT 120 - Final Project
+# CMPT 120 - Final Group Project
 
 GENERAL PROGRAM DESCRIPTION
 
